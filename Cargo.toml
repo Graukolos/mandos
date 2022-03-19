@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+	"mandos-client",
+	"mandos-server",
+]
