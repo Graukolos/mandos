@@ -6,4 +6,4 @@ edition = "2021"
 [dependencies]
 mandos-lib = { path = "../mandos-lib" }
 ciborium = "0.2.0"
-gtk4 = "0.4.6"
+gtk4 = "0.4.7"
