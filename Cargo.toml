@@ -3,4 +3,5 @@
 members = [
 	"mandos-client",
 	"mandos-server",
+	"mandos-lib",
 ]

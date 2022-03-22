@@ -1,9 +1,8 @@
 [package]
-name = "mandos-client"
+name = "mandos-lib"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-mandos-lib = { path = "../mandos-lib" }
+serde = { version = "1.0.136", features = ["derive"] }
 ciborium = "0.2.0"
-gtk4 = "0.4.6"

@@ -4,4 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-serde = "1.0.136"
+mandos-lib = { path = "../mandos-lib" }
+serde = { version = "1.0.136", features = ["derive"] }
+ciborium = "0.2.0"
