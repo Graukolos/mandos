@@ -1,11 +1,12 @@
-use std::net::TcpStream;
-use ciborium::de::from_reader;
-use mandos_lib::Message;
+mod mandos_client;
+mod networking;
+
+use mandos_client::MandosClient;
 
 fn main() {
-    let stream = TcpStream::connect("127.0.0.1:25565").unwrap();
+    env_logger::init();
 
-    let message: Message = from_reader(stream).unwrap();
-
-    println!("{:?}", message);
+    let app = MandosClient::default();
+    let native_options = eframe::NativeOptions::default();
+    eframe::run_native(Box::new(app), native_options);
 }

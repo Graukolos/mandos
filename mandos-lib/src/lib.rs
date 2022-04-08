@@ -1,7 +1,13 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub enum Message {
-    Hello,
-    Ciao,
+pub enum ClientMessage {
+    RequestWatering(u8),
+    RequestMoisture,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum ServerMessage {
+    Moisture(f32),
+    WateringSuccess,
 }
