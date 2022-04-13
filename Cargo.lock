@@ -572,6 +572,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "dns-lookup"
+version = "1.0.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "53ecafc952c4528d9b51a458d1a8904b81783feff9fde08ab6ed2545ff396872"
+dependencies = [
+ "cfg-if 1.0.0",
+ "libc",
+ "socket2",
+ "winapi",
+]
+
+[[package]]
 name = "downcast-rs"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1093,6 +1105,7 @@ name = "mandos-client"
 version = "0.1.0"
 dependencies = [
  "ciborium",
+ "dns-lookup",
  "eframe",
  "env_logger",
  "log",
@@ -1115,6 +1128,7 @@ dependencies = [
  "env_logger",
  "log",
  "mandos-lib",
+ "rppal",
 ]
 
 [[package]]
@@ -1597,6 +1611,16 @@ name = "regex-syntax"
 version = "0.6.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
+
+[[package]]
+name = "rppal"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c88c9c6248de4d337747b619d8f671055ef48a87dc21b97998833f189a0bbd4f"
+dependencies = [
+ "lazy_static",
+ "libc",
+]
 
 [[package]]
 name = "rust-ini"

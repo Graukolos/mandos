@@ -2,6 +2,7 @@ use crate::networking;
 use crate::networking::connect;
 use eframe::egui::{CentralPanel, Context, Slider};
 use eframe::epi::{App, Frame};
+use log::debug;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 use std::thread::JoinHandle;
@@ -28,8 +29,9 @@ impl App for MandosClient {
                     ui.label("Server Address");
                     ui.text_edit_singleline(input_string);
                     if ui.button("Connect").clicked() {
-                        match connect(input_string.as_str()) {
+                        match connect(input_string) {
                             Ok(stream) => {
+                                debug!("Ok");
                                 let (tx1, rx1) = mpsc::channel();
                                 let (tx2, rx2) = mpsc::channel();
                                 let networking_thread = networking::worker(stream, rx1, tx2);
@@ -41,7 +43,10 @@ impl App for MandosClient {
                                     -1.0,
                                 ))
                             }
-                            Err(_) => *connection_failed_before = true,
+                            Err(_) => {
+                                debug!("Err");
+                                *connection_failed_before = true
+                            }
                         }
                     }
                     if *connection_failed_before {

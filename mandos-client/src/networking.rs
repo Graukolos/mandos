@@ -1,8 +1,10 @@
 use ciborium::de::from_reader;
 use ciborium::ser::into_writer;
-use log::{info, warn};
+use dns_lookup::lookup_host;
+use log::{debug, info, warn};
 use mandos_lib::{ClientMessage, ServerMessage};
-use std::net::TcpStream;
+use std::net::{IpAddr, SocketAddr, TcpStream};
+use std::str::FromStr;
 use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use std::thread::JoinHandle;
@@ -10,7 +12,28 @@ use std::time::Duration;
 
 pub fn connect(server_address: &str) -> std::io::Result<TcpStream> {
     info!("Trying to connect to {}", server_address);
-    TcpStream::connect(format!("{}:25566", server_address))
+    let ip_addrs = match IpAddr::from_str(format!("{}:25566", server_address).as_str()) {
+        Ok(v) => vec![v],
+        Err(_) => match lookup_host(server_address) {
+            Ok(v) => v,
+            Err(e) => return Err(e),
+        },
+    };
+
+    let mut result = None;
+
+    for ip_addr in ip_addrs.iter() {
+        debug!("{}", ip_addr);
+        match TcpStream::connect_timeout(
+            &SocketAddr::new(*ip_addr, 25566),
+            Duration::from_millis(500),
+        ) {
+            Ok(stream) => return Ok(stream),
+            Err(e) => result = Some(Err(e)),
+        };
+    }
+
+    result.unwrap()
 }
 
 fn send(stream: &TcpStream, message: &ClientMessage) {

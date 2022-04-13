@@ -8,15 +8,25 @@ use std::thread;
 fn main() {
     env_logger::init();
 
-    info!("Creating listener");
-    let listener = TcpListener::bind("localhost:25566")
+    info!("Creating listeners");
+    let ipv4listener = TcpListener::bind("127.0.0.1:25566")
+        .expect("Failed to create Listener, is another server already running?");
+    let ipv6listener = TcpListener::bind("::1:25565")
         .expect("Failed to create Listener, is another server already running?");
 
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
-        info!("Spawning thread for new connection");
-        thread::spawn(|| server_handle(stream));
-    }
+    listen(ipv4listener);
+    listen(ipv6listener);
+}
+
+fn listen(listener: TcpListener) {
+    thread::spawn(move || {
+        for stream in listener.incoming() {
+            let stream = stream.unwrap();
+
+            info!("Spawning thread for new connection");
+            thread::spawn(|| server_handle(stream));
+        }
+    });
 }
 
 fn server_handle(stream: TcpStream) {
