@@ -4,6 +4,7 @@ use log::{info, trace};
 use mandos_lib::{ClientMessage, ServerMessage};
 use std::net::{TcpListener, TcpStream};
 use std::thread;
+use std::thread::JoinHandle;
 
 fn main() {
     env_logger::init();
@@ -14,11 +15,14 @@ fn main() {
     let ipv6listener = TcpListener::bind("::1:25565")
         .expect("Failed to create Listener, is another server already running?");
 
-    listen(ipv4listener);
-    listen(ipv6listener);
+    let ipv4_thread_handle = listen(ipv4listener);
+    let ipv6_thread_handle = listen(ipv6listener);
+
+    ipv4_thread_handle.join().unwrap();
+    ipv6_thread_handle.join().unwrap();
 }
 
-fn listen(listener: TcpListener) {
+fn listen(listener: TcpListener) -> JoinHandle<()> {
     thread::spawn(move || {
         for stream in listener.incoming() {
             let stream = stream.unwrap();
@@ -26,7 +30,7 @@ fn listen(listener: TcpListener) {
             info!("Spawning thread for new connection");
             thread::spawn(|| server_handle(stream));
         }
-    });
+    })
 }
 
 fn server_handle(stream: TcpStream) {
