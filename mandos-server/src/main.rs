@@ -12,7 +12,7 @@ fn main() {
     info!("Creating listeners");
     let ipv4listener = TcpListener::bind("127.0.0.1:25566")
         .expect("Failed to create Listener, is another server already running?");
-    let ipv6listener = TcpListener::bind("::1:25565")
+    let ipv6listener = TcpListener::bind("::1:25566")
         .expect("Failed to create Listener, is another server already running?");
 
     let ipv4_thread_handle = listen(ipv4listener);
