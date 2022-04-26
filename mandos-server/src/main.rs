@@ -10,7 +10,7 @@ fn main() {
     env_logger::init();
 
     info!("Creating listeners");
-    let ipv4listener = TcpListener::bind("127.0.0.1:25566")
+    let ipv4listener = TcpListener::bind("0.0.0.0:25566")
         .expect("Failed to create Listener, is another server already running?");
     let ipv6listener = TcpListener::bind("::1:25566")
         .expect("Failed to create Listener, is another server already running?");
