@@ -5,6 +5,10 @@ use mandos_lib::{ClientMessage, ServerMessage};
 use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::thread::JoinHandle;
+use rppal::gpio::Gpio;
+use std::time::Duration;
+
+const VALVE_PIN: u8 = 17;
 
 fn main() {
     env_logger::init();
@@ -34,6 +38,10 @@ fn listen(listener: TcpListener) -> JoinHandle<()> {
 }
 
 fn server_handle(stream: TcpStream) {
+    let gpio = Gpio::new().unwrap();
+
+    let mut valve_pin = gpio.get(VALVE_PIN).unwrap().into_output();
+
     loop {
         match from_reader(&stream) {
             Ok(message) => {
@@ -42,7 +50,10 @@ fn server_handle(stream: TcpStream) {
                     ClientMessage::RequestMoisture => {
                         into_writer(&ServerMessage::Moisture(0.5), &stream).unwrap();
                     }
-                    ClientMessage::RequestWatering(_) => {
+                    ClientMessage::RequestWatering(secs) => {
+                        valve_pin.set_high();
+                        thread::sleep(Duration::from_secs(secs.into()));
+                        valve_pin.set_low();
                         into_writer(&ServerMessage::WateringSuccess, &stream).unwrap();
                     }
                 }
